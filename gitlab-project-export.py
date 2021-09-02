@@ -128,6 +128,14 @@ if __name__ == '__main__':
             if args.debug:
                 print(" URL: %s" % (url))
 
+            # Download variables
+            variables = gitlab.variables
+            if variables.status_code >= 200 and variables.status_code < 300:
+                with open(dest_file + ".variables.txt", 'wb') as f:
+                    for chunk in variables.iter_content(chunk_size=1024):
+                        if chunk:
+                            f.write(chunk)  
+
             # Download file
             r = requests.get(
                 url,

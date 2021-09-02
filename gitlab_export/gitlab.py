@@ -31,6 +31,19 @@ class Api:
             print(e, file=sys.stderr)
             sys.exit(1)
 
+    def __api_variables(self, project_url):
+        '''Get project variables'''
+        self.download_url = None
+        try:
+            return requests.get(
+                self.api_url + "/projects/" +
+                project_url + "/variables",
+                headers=self.headers,
+                verify=self.ssl_verify)
+        except requests.exceptions.RequestException as e:
+            print(e, file=sys.stderr)
+            sys.exit(1)
+
     def __api_import(self, project_name, namespace, filename):
         '''Send import request to API'''
         data = {
@@ -123,6 +136,8 @@ class Api:
         in objects variable download_url ready to be downloaded'''
 
         url_project_path = urllib.parse.quote(project_path, safe='')
+
+        self.variables  = self.__api_variables(url_project_path)
 
         # Let's export project
         r = self.__api_export(url_project_path)
